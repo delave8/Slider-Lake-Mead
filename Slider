@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+    }
+    img {
+      width: 100%;
+      display: block;
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      overflow: hidden;
+    }
+    .slider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: white;
+      cursor: ew-resize;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <img src="before.jpg">
+  <div class="overlay" id="overlay">
+    <img src="after.jpg">
+  </div>
+  <div class="slider" id="slider"></div>
+</div>
+
+<script>
+  const slider = document.getElementById("slider");
+  const overlay = document.getElementById("overlay");
+
+  slider.onmousedown = function(e) {
+    document.onmousemove = function(e) {
+      let x = e.pageX / window.innerWidth * 100;
+      overlay.style.width = x + "%";
+      slider.style.left = x + "%";
+    }
+  };
+
+  document.onmouseup = function() {
+    document.onmousemove = null;
+  };
+</script>
+
+</body>
+</html>
