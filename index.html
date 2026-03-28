@@ -6,6 +6,7 @@
       position: relative;
       width: 100%;
       max-width: 800px;
+      user-select: none; /* verhindert Textauswahl beim Drag */
     }
     img {
       width: 100%;
@@ -15,22 +16,25 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 50%;
+      width: 50%; /* Startbreite */
+      height: 100%;
       overflow: hidden;
     }
     .slider {
       position: absolute;
       top: 0;
       bottom: 0;
+      left: 50%; /* Startposition */
       width: 3px;
       background: white;
       cursor: ew-resize;
+      z-index: 10;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="container">
   <img src="before.jpg">
   <div class="overlay" id="overlay">
     <img src="after.jpg">
@@ -41,18 +45,27 @@
 <script>
   const slider = document.getElementById("slider");
   const overlay = document.getElementById("overlay");
+  const container = document.getElementById("container");
 
-  slider.onmousedown = function(e) {
-    document.onmousemove = function(e) {
-      let x = e.pageX / window.innerWidth * 100;
-      overlay.style.width = x + "%";
-      slider.style.left = x + "%";
-    }
-  };
+  let isDragging = false;
 
-  document.onmouseup = function() {
-    document.onmousemove = null;
-  };
+  slider.addEventListener("mousedown", () => isDragging = true);
+  document.addEventListener("mouseup", () => isDragging = false);
+  document.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+
+    // Berechne Position relativ zum Container
+    const rect = container.getBoundingClientRect();
+    let x = e.clientX - rect.left;
+    
+    // Begrenze die Breite auf Containergrenzen
+    if (x < 0) x = 0;
+    if (x > rect.width) x = rect.width;
+
+    // Setze Overlay-Breite und Slider-Position
+    overlay.style.width = x + "px";
+    slider.style.left = x + "px";
+  });
 </script>
 
 </body>
