@@ -1,78 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <style>
-    .container {
-      position: relative;
-      width: 800px;  /* Feste Breite zum Testen */
-      height: 400px; /* Feste Höhe, sonst ist overlay unsichtbar */
-      overflow: hidden;
-      user-select: none;
-      border: 1px solid #ccc;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Before and After Slider</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f4; }
+        
+        /* The container for the images */
+        .container { position: relative; width: 800px; max-width: 90vw; aspect-ratio: 16/9; overflow: hidden; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        
+        .image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; }
 
-    .container img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* wichtig, damit das Bild die Containergröße ausfüllt */
-    }
+        /* The "After" image stays on top */
+        .after { background-image: url('after.jpg'); }
+        
+        /* The "Before" image is clipped by the slider */
+        .before { background-image: url('before.jpg'); width: 50%; border-right: 3px solid white; }
 
-    .overlay {
-      width: 50%; /* Startbreite */
-      height: 100%;
-      overflow: hidden;
-      position: absolute;
-      top: 0;
-      left: 0;
-    }
+        /* The invisible slider input that covers the image */
+        .slider { position: absolute; -webkit-appearance: none; appearance: none; width: 100%; height: 100%; background: transparent; outline: none; margin: 0; cursor: ew-resize; z-index: 10; }
 
-    .slider {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      width: 5px;
-      height: 100%;
-      background: red;
-      cursor: ew-resize;
-      z-index: 10;
-    }
-  </style>
+        /* Style for the slider handle */
+        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 5px; height: 100vh; background: white; cursor: ew-resize; }
+    </style>
 </head>
 <body>
 
-<div class="container" id="container">
-  <img src="before.jpg">
-  <div class="overlay" id="overlay">
-    <img src="after.jpg">
-  </div>
-  <div class="slider" id="slider"></div>
+<div class="container">
+    <div class="image after"></div>
+    <div class="image before" id="before-img"></div>
+    <input type="range" min="0" max="100" value="50" class="slider" id="slider">
 </div>
 
 <script>
-  const slider = document.getElementById("slider");
-  const overlay = document.getElementById("overlay");
-  const container = document.getElementById("container");
+    const slider = document.getElementById('slider');
+    const beforeImg = document.getElementById('before-img');
 
-  let isDragging = false;
-
-  slider.addEventListener("mousedown", () => isDragging = true);
-  document.addEventListener("mouseup", () => isDragging = false);
-
-  document.addEventListener("mousemove", (e) => {
-    if (!isDragging) return;
-
-    const rect = container.getBoundingClientRect();
-    let x = e.clientX - rect.left;
-
-    if (x < 0) x = 0;
-    if (x > rect.width) x = rect.width;
-
-    overlay.style.width = x + "px";
-    slider.style.left = x + "px";
-  });
+    slider.addEventListener('input', (e) => {
+        const value = e.target.value;
+        beforeImg.style.width = value + '%';
+    });
 </script>
 
 </body>
