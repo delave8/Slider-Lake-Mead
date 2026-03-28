@@ -3,43 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Before and After Slider</title>
+    <title>Before/After Slider</title>
     <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f4f4f4; }
-        
-        /* The container for the images */
-        .container { position: relative; width: 800px; max-width: 90vw; aspect-ratio: 16/9; overflow: hidden; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        
-        .image { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; }
+        /* Centers the slider on your screen */
+        body { 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            background-color: #1a1a1a; 
+        }
 
-        /* The "After" image stays on top */
-        .after { background-image: url('after.jpg'); }
-        
-        /* The "Before" image is clipped by the slider */
-        .before { background-image: url('before.jpg'); width: 50%; border-right: 3px solid white; }
+        /* The Frame: Set your desired display size here */
+        .comparison-slider {
+            position: relative;
+            width: 90vw;      /* 90% of screen width */
+            max-width: 900px; /* but no wider than 900px */
+            aspect-ratio: 16 / 9; /* Keeps the shape consistent */
+            overflow: hidden;
+            border: 4px solid #fff;
+            border-radius: 12px;
+        }
 
-        /* The invisible slider input that covers the image */
-        .slider { position: absolute; -webkit-appearance: none; appearance: none; width: 100%; height: 100%; background: transparent; outline: none; margin: 0; cursor: ew-resize; z-index: 10; }
+        /* Base settings for both images */
+        .image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;    /* This forces them to be the same size */
+            background-position: center; /* This keeps them centered */
+        }
 
-        /* Style for the slider handle */
-        .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 5px; height: 100vh; background: white; cursor: ew-resize; }
+        .after-img {
+            background-image: url('after.jpg');
+        }
+
+        .before-img {
+            background-image: url('before.jpg');
+            width: 50%; /* Starting position */
+            z-index: 2;
+            border-right: 3px solid #fff;
+        }
+
+        /* The Interactive Slider Input */
+        .slider-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0; /* Keeps it invisible but clickable */
+            cursor: ew-resize;
+            z-index: 3;
+            margin: 0;
+        }
+
+        /* Small labels for clarity */
+        .label {
+            position: absolute;
+            bottom: 20px;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-family: sans-serif;
+            font-size: 12px;
+            text-transform: uppercase;
+            pointer-events: none; /* Mouse ignores these */
+            border-radius: 4px;
+        }
+        .label-before { left: 20px; z-index: 4; }
+        .label-after { right: 20px; z-index: 1; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="image after"></div>
-    <div class="image before" id="before-img"></div>
-    <input type="range" min="0" max="100" value="50" class="slider" id="slider">
+<div class="comparison-slider">
+    <div class="label label-before">Before</div>
+    <div class="label label-after">After</div>
+
+    <div class="image after-img"></div>
+    <div class="image before-img" id="before"></div>
+
+    <input type="range" min="0" max="100" value="50" class="slider-input" id="resizer">
 </div>
 
 <script>
-    const slider = document.getElementById('slider');
-    const beforeImg = document.getElementById('before-img');
+    const resizer = document.getElementById('resizer');
+    const before = document.getElementById('before');
 
-    slider.addEventListener('input', (e) => {
-        const value = e.target.value;
-        beforeImg.style.width = value + '%';
+    resizer.addEventListener('input', (e) => {
+        let val = e.target.value;
+        before.style.width = val + '%';
     });
 </script>
 
